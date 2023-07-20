@@ -9,47 +9,87 @@ const App = (props) => {
   const [description, setDescription] = useState('');
   const [issue, setIssue] = useState('');
   const [status, setStatus] = useState(false);
+  const [updateStart, setUpdateStart] = useState(false);
+
+    const handleUpdateStatus =(name, email, des, issue)=>{
+      setUpdateStart(true);
+      setName(name);
+      setEmail(email);
+      setDescription(des);
+      setIssue(issue);
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth' // For smooth scrolling
+      });
+    }
 
   const issuesRef = firestore.collection('issues');
-  const dataToAdd = {
+  const dataToAddorUpdate = {
     name,
     email,
     description,
     issue,
     status
   };
-  const [issues, setissues] = useState([]);
+  const [issues, setIssues] = useState([]);
   const handleAddIssue = async (e) => {
     e.preventDefault();
-    await issuesRef.add(dataToAdd)
+    const querySnapshot = await issuesRef.where('email', '==', email).get();
+    console.log(querySnapshot.docs.length);
+    querySnapshot.docs.length>0?window.alert('already exist'):
+     dataToAddorUpdate.email!=''&&dataToAddorUpdate.issue!=''? await issuesRef.add(dataToAddorUpdate)
       .then((docRef) => {
         console.log('Issue added: ', docRef.id);
-
+        window.location.reload();
       })
       .catch((error) => {
         console.error('Error adding document: ', error);
-      });
-    window.location.reload();
+      }):window.alert('Email and Issue are Required');
+    
   }
-  const handleUpdateNote = async (id, newText) => {
-    await issuesRef.doc(id).update({ text: newText });
-    setEditNoteId(null);
-  };
 
-  const handleRemoveNote = async (id) => {
-    await issuesRef.doc(id).delete();
-  };
-
-
-
+  // Edit Issue
+  const handleEditIssue = async (email , newData) => {
+    try {
+      const querySnapshot = await issuesRef.where('email', '==', email).get();
   
+      const batch = firestore.batch();
+      querySnapshot.forEach((doc) => {
+        batch.update(doc.ref, newData);
+      });
+  
+      await batch.commit();
+      window.alert('Issue deleted successfully.')
+        window.location.reload();
+      console.log('Issue updated successfully.');
+    } catch (error) {
+      console.error('Error updating documents:', error);
+    }
+  };
+
+  // Delet Issue
+  const handleDelete = async (email) => {
+    try {
+      const querySnapshot = await issuesRef.where('email', '==', email).get();
+      const batch = firestore.batch();
+      querySnapshot.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+      await batch.commit();
+      window.alert('Issue deleted successfully.')
+        window.location.reload();
+      console.log('Issue deleted successfully.');
+    } catch (error) {
+      console.error('Error deleting documents:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const querySnapshot = await firestore.collection('issues').get();
         const data = querySnapshot.docs.map((doc) => doc.data());
-        setissues(data);
+        setIssues(data);
       } catch (error) {
         console.log('Error fetching data: ', error);
       }
@@ -93,10 +133,14 @@ const App = (props) => {
 
 
       </form>
-      <button type="submit" className="btn btn-primary" onClick={handleAddIssue}>Submit</button>
-      <div className='mtm-5'><h2 className='text-center'>Issue List</h2></div>
-      
-      <IssueTable issues = {issues}/>
+      <button type="submit" className="btn btn-primary" style={{'display': updateStart?'none':'block'}} onClick={handleAddIssue} >Submit</button>
+
+      <button type="submit" className="btn btn-primary" style={{'display': updateStart?'block':'none'}} onClick={()=>handleEditIssue(email, dataToAddorUpdate)} >Update Issue</button>
+
+
+      <div className='mt-5'><h2 className='text-center'>Issue List</h2></div>
+      {issues.length > 0 ? <IssueTable issues={issues} handleEdit={handleEditIssue} delete={handleDelete} updateStart={updateStart} updateStatus={handleUpdateStatus}/> : <div className='mt-2 mb-6'><h3 className='text-center'>No issue added yet.</h3></div>}
+
 
     </div>
   )

@@ -2,7 +2,7 @@ import React from 'react'
 
 const IssueTable = (props) => {
   return (
-    <div className='container mt-1'>
+    <div className='container mt-1 mb-5'>
         <table className="table">
           <thead>
             <tr>
@@ -24,16 +24,20 @@ const IssueTable = (props) => {
                 <td>{issue.email}</td>
                 <td>{issue.issue}</td>
                 <td>{issue.description}</td>
-                <td>{issue.status == false ? 'pending' : 'Done'}</td>
+                <td>{issue.status === false ? 'pending' : 'Done'}</td>
                 <td>
-                  <i className="fas fa-edit me-3 ms-3" title='Edit Issue'></i>
-                  <i className="fas fa-trash " title='Delete Issue'></i>
+                  <i className="fas fa-edit me-3 ms-3" title='Edit Issue' onClick={()=> props.updateStatus(issue.name, issue.email, issue.description, issue.issue)}></i>
+
+
+                  <i className="fas fa-trash " title='Delete Issue' onClick={()=>props.delete(issue.email)}></i>
                 </td>
               </tr>
             ))}
 
           </tbody>
         </table>
+
+        
 
       </div>
   )
