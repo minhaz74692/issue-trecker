@@ -24,7 +24,9 @@ const IssueTable = (props) => {
                 <td>{issue.email}</td>
                 <td>{issue.issue}</td>
                 <td>{issue.description}</td>
-                <td>{issue.status === false ? 'pending' : 'Done'}</td>
+                <td><button type="button" className={issue.status === false ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-dark'}onClick={()=> props.handleStatus(issue.email, {status: issue.status===true?false:true})}>{issue.status === false ? 'pending' : 'Done'}</button>
+</td>
+                {/* <td><i onClick={()=>issue.status === false ? 'done' : 'pending'}>{issue.status === false ? 'pending' : 'Done'}</i></td> */}
                 <td>
                   <i className="fas fa-edit me-3 ms-3" title='Edit Issue' onClick={()=> props.updateStatus(issue.name, issue.email, issue.description, issue.issue)}></i>
 
