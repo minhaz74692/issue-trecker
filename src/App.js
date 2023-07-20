@@ -39,7 +39,7 @@ const App = (props) => {
     e.preventDefault();
     const querySnapshot = await issuesRef.where('email', '==', email).get();
     console.log(querySnapshot.docs.length);
-    querySnapshot.docs.length>0?window.alert('already exist'):
+    querySnapshot.docs.length>0?window.alert('you can not add more then one issue with same email.'):
      dataToAddorUpdate.email!=''&&dataToAddorUpdate.issue!=''? await issuesRef.add(dataToAddorUpdate)
       .then((docRef) => {
         console.log('Issue added: ', docRef.id);
@@ -123,7 +123,7 @@ const App = (props) => {
   return (
     <div className='container mt-2'>
       <div  className='col-6 ms-auto me-auto'>
-      <h2 className='text-center'>Issue Treaker</h2>
+      <h2 className='text-center'>Issue Tracker</h2>
       <form>
         <div className="mb-2">
           <label htmlFor="name" className="form-label">Name</label>
