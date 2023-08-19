@@ -1,0 +1,87 @@
+class BottomAlert extends StatefulWidget {
+  const BottomAlert({super.key});
+
+  @override
+  State<BottomAlert> createState() => _BottomAlertState();
+}
+
+class _BottomAlertState extends State<BottomAlert> {
+  bool isReorderOption = false;
+  bool isTextBoxOption = true;
+  bool isDraggableQuestion = false;
+  bool isReorderCorrect = true;
+  bool isTextboxRight = false;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: ElevatedButton(
+          child: const Text('Click'),
+          onPressed: () {
+            showModalBottomSheet<void>(
+              isDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return Container(
+                  padding: EdgeInsets.all(20),
+                  height: 120,
+                  color: Colors.white,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        isReorderOption
+                            ? Column(
+                                children: [
+                                  isReorderCorrect
+                                      ? Text(
+                                          'Your Answer Order: [2,3,1,0] (Correct!)')
+                                      : Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                'Your Answer Order: [2,3,1,0] (Wrong!)'),
+                                            Text(
+                                                'Correct Answer Order: [1,3,2,0]'),
+                                          ],
+                                        ),
+                                ],
+                              )
+                            : isTextBoxOption
+                                ? isTextboxRight
+                                    ? Text(
+                                        'Your Answer: Text box answer (correct!)')
+                                    : Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                              'Your Answer: Text box answer (wrong!)'),
+                                          Text("Correct Answer: Correct ans!!")
+                                        ],
+                                      )
+                                : isDraggableQuestion
+                                    ? const Text('isdraggable')
+                                    : const Text('data'),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: ElevatedButton(
+                            child: const Text('Next'),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
