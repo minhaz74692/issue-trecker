@@ -7,10 +7,11 @@ class BottomAlert extends StatefulWidget {
 
 class _BottomAlertState extends State<BottomAlert> {
   bool isReorderOption = false;
-  bool isTextBoxOption = true;
-  bool isDraggableQuestion = false;
+  bool isTextBoxOption = false;
+  bool isDraggableQuestion = true;
   bool isReorderCorrect = true;
   bool isTextboxRight = false;
+  bool isDragRight = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,8 +62,17 @@ class _BottomAlertState extends State<BottomAlert> {
                                         ],
                                       )
                                 : isDraggableQuestion
-                                    ? const Text('isdraggable')
-                                    : const Text('data'),
+                                    ? isDragRight
+                                    ? Text(
+                                        'Your Answer: Drag box answer (correct!)')
+                                    : Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                              'Your Answer: Text Drag answer (wrong!)'),
+                                          Text("Correct Answer: Correct ans!!")
+                                        ],
+                                      ):Text('data'),
                         SizedBox(
                           height: 10,
                         ),
